@@ -1,5 +1,7 @@
 using E_Com.infrastructure;
+
 namespace E_Com.Api
+
 {
     public class Program
     {
@@ -14,6 +16,7 @@ namespace E_Com.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.infrastructureConfiguration(builder.Configuration);
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
