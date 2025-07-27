@@ -38,6 +38,7 @@ namespace E_Com.infrastructure.Services
             return saveImage;
         }
 
+
         public void DeleteImageAsync(string src)
         {
             var info = _fileProvider.GetFileInfo(src);
