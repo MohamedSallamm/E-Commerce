@@ -10,8 +10,8 @@ namespace E_Com.infrastructure.Data.Configuration
         {
             builder.Property(propertyExpression: x => x.Name).IsRequired();
             builder.Property(propertyExpression: x => x.Description).IsRequired();
-            builder.Property(propertyExpression: x => x.Price).HasColumnType(typeName: "decimal(18.2)");
-            builder.HasData(new Product { Id = 1, Name = "Test", Description = "Test", CategoryId = 1, Price = 100 });
+            builder.Property(propertyExpression: x => x.NewPrice).HasColumnType(typeName: "decimal(18.2)");
+            builder.HasData(new Product { Id = 1, Name = "Test", Description = "Test", CategoryId = 1, NewPrice = 100 });
         }
     }
 }

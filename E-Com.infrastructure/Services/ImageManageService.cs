@@ -11,39 +11,43 @@ namespace E_Com.infrastructure.Services
         {
             _fileProvider = fileProvider;
         }
-        public async Task<List<string>> AddImageAsync(IFormFileCollection files, string src)
+        public async Task<List<string>> AddImageAsync(List<IFormFile> Photo, string src)
         {
             var saveImage = new List<string>();
-            var ImageDirectory = Path.Combine("wwwroot", "Images", src);
-            if (Directory.Exists(ImageDirectory) is false)
-            {
-                Directory.CreateDirectory(ImageDirectory);
-            }
-            foreach (var item in files)
+
+            // physical path
+            var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var folderName = string.IsNullOrWhiteSpace(src) ? Guid.NewGuid().ToString() : src;
+            var imageDirectory = Path.Combine(wwwRootPath, "Images", folderName);
+
+            if (!Directory.Exists(imageDirectory))
+                Directory.CreateDirectory(imageDirectory);
+
+            foreach (var item in Photo)
             {
                 if (item.Length > 0)
                 {
-                    //get image Name
-                    var ImageName = item.FileName;
-                    var Imagesrc = $"/Images/{src}/{ImageName}";
-                    var root = Path.Combine(ImageDirectory, ImageName);
-                    using (var stream = new FileStream(root, FileMode.Create))
-                    {
-                        await item.CopyToAsync(stream);
-                    }
-                    saveImage.Add(Imagesrc);
+                    var imageName = item.FileName;
+                    var imagePath = Path.Combine(imageDirectory, imageName);
+                    var imageUrl = $"/Images/{folderName}/{imageName}";
 
+                    using var stream = new FileStream(imagePath, FileMode.Create);
+                    await item.CopyToAsync(stream);
+
+                    saveImage.Add(imageUrl);
                 }
             }
             return saveImage;
         }
-
-
         public void DeleteImageAsync(string src)
         {
             var info = _fileProvider.GetFileInfo(src);
             var root = info.PhysicalPath;
-            File.Delete(root);
+
+            if (File.Exists(root))
+                File.Delete(root);
         }
+
+
     }
 }

@@ -51,8 +51,33 @@ namespace E_Com.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("AddProduct")]
+        public async Task<IActionResult> AddProduct([FromForm] AddProductDTO addProductDTO)
+        {
+            try
+            {
+                await _Work.ProductRepository.AddAsync(addProductDTO);
+                return Ok(new ResponseApi(200, "Product added successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseApi(400, ex.Message));
+            }
 
-
+        }
+        [HttpPut("UpdateProduct")]
+        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductDTO updateProductDTO)
+        {
+            try
+            {
+                await _Work.ProductRepository.UpdateAsync(updateProductDTO);
+                return Ok(new ResponseApi(200, "Product updated successfully"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseApi(400, ex.Message));
+            }
+        }
 
     }
 }
