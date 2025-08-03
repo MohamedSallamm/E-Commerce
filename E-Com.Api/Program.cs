@@ -1,3 +1,4 @@
+using E_Com.Api.MiddleWare;
 using E_Com.infrastructure;
 
 namespace E_Com.Api
@@ -10,7 +11,7 @@ namespace E_Com.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddMemoryCache();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -26,7 +27,8 @@ namespace E_Com.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionMiddleWare>();
+            app.UseStatusCodePagesWithReExecute("/api/Errors/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthorization();

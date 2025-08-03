@@ -39,6 +39,8 @@ namespace E_Com.infrastructure.Repositories
             return true;
         }
 
+
+
         public async Task<bool> UpdateAsync(UpdateProductDTO UpdateProductDTO)
         {
             if (UpdateProductDTO == null) return false;
@@ -65,6 +67,19 @@ namespace E_Com.infrastructure.Repositories
             _context.Photos.AddRange(photos);
             _context.SaveChanges();
             return true;
+        }
+
+        public async Task DeleteAsync(Product product)
+        {
+            var photo = await _context.Photos.Where(m => m.ProductId == product.Id).ToListAsync();
+            foreach (var item in photo)
+            {
+                _imageManageService.DeleteImageAsync(item.ImageName);
+
+            }
+            _context.Photos.RemoveRange(photo);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
         }
     }
 }

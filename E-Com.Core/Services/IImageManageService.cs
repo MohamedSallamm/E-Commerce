@@ -6,7 +6,7 @@ namespace E_Com.Core.Services
     {
 
         //  Task<List<string>> AddImageAsync(List<IFormFile> Photo, string src);
-        Task<List<string>> AddImageAsync(List<IFormFile> Photo, string src); // يرجع string واحد
+        Task<List<string>> AddImageAsync(List<IFormFile> Photo, string src); // واحد string يرجع
 
         void DeleteImageAsync(string src);
 

@@ -7,5 +7,6 @@ namespace E_Com.Core.Interfaces
     {
         Task<bool> AddAsync(AddProductDTO addProductDTO);
         Task<bool> UpdateAsync(UpdateProductDTO UpdateProductDTO);
+        Task DeleteAsync(Product product);
     }
 }
