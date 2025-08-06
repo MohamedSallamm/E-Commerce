@@ -11,6 +11,6 @@ namespace E_Com.Core.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
-
+        Task<int> CountAsync();
     }
 }

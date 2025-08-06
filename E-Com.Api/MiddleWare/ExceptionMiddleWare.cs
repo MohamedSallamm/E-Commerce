@@ -53,7 +53,7 @@ namespace E_Com.Api.MiddleWare
         }
         private bool ISRequestAllowed(HttpContext httpContext)
         {
-            var ip = httpContext.Connection.RemoteIpAddress.ToString();
+            var ip = httpContext.Connection?.RemoteIpAddress?.ToString();
             var cachKey = $"Rate:{ip}";
             var DateNow = DateTime.Now;
             var (TimesTamp, count) = _memoryCache.GetOrCreate(cachKey,

@@ -3,6 +3,7 @@ using E_Com.Core.DTO;
 using E_Com.Core.Entities.Product;
 using E_Com.Core.Interfaces;
 using E_Com.Core.Services;
+using E_Com.Core.Sharing;
 using E_Com.infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,48 @@ namespace E_Com.infrastructure.Repositories
             _context = context;
             _imageManageService = imageManageService;
         }
+
+        public async Task<IEnumerable<ProductDTO>> GetAllAsync(ProductParams productParams)
+        {
+
+            var query = _context.Products.Include(m => m.Category).Include(m => m.Photos).AsQueryable().AsNoTracking();
+
+            if (!string.IsNullOrEmpty(productParams.Search))
+            {
+                var searchWord = productParams.Search.Split(' ');
+                query = query.Where(m => searchWord.All(word =>
+                m.Name.ToLower().Contains(word) ||
+                m.Description.ToLower().Contains(word)));
+
+            }
+
+
+
+            if (productParams.CategoryId.HasValue)
+                query = query.Where(m => m.CategoryId == productParams.CategoryId);
+            if (!string.IsNullOrEmpty(productParams.Sort))
+            {
+                query = productParams.Sort switch
+                {
+                    "PriceAsc" => query.OrderBy(m => m.NewPrice),
+                    "PriceDesc" => query.OrderByDescending(m => m.NewPrice),
+                    _ => query.OrderByDescending(m => m.Name)
+                };
+
+            }
+
+            int pageNumber = productParams.PageNumber < 1 ? 1 : productParams.PageNumber;
+            int pageSize = productParams.PageSize < 1 ? 5 : productParams.PageSize;
+
+            query = query.Skip((pageNumber - 1) * pageSize)
+                         .Take(pageSize);
+
+
+            return _mapper.Map<List<ProductDTO>>(await query.ToListAsync());
+
+
+        }
+
 
         public async Task<bool> AddAsync(AddProductDTO addProductDTO)
         {
@@ -81,5 +124,7 @@ namespace E_Com.infrastructure.Repositories
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using E_Com.Api.Helper;
 using E_Com.Core.DTO;
 using E_Com.Core.Interfaces;
+using E_Com.Core.Sharing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Com.Api.Controllers
@@ -14,17 +15,13 @@ namespace E_Com.Api.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] ProductParams productParams)
         {
             try
             {
-                var Result = await _Work.ProductRepository.GetAllAsync(x => x.Category, p => p.Photos);
-                if (Result is null)
-                    return BadRequest(new ResponseApi(400));
-                //return Ok(Result);
-
-                var dtoResult = _Mapper.Map<List<ProductDTO>>(Result);
-                return Ok(dtoResult);
+                var Products = await _Work.ProductRepository.GetAllAsync(productParams);
+                var totalCount = await _Work.ProductRepository.CountAsync();
+                return Ok(new Pagination<ProductDTO>(productParams.PageNumber, productParams.PageSize, totalCount, data: Products));
             }
 
             catch (Exception ex)
